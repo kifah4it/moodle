@@ -47,12 +47,13 @@ class enrol_apply_manage_table extends table_sql {
        
         $this->set_sql(
             'ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate,
-            ai.comment AS applycomment, u.*, c.fullname as course',
+            ai.comment AS applycomment, u.*, c.fullname as course, ud.data as ArabicName',
             "{user_enrolments} AS ue
             LEFT JOIN {enrol_apply_applicationinfo} ai ON ai.userenrolmentid = ue.id
             JOIN {user} u ON u.id = ue.userid
             JOIN {enrol} e ON e.id = ue.enrolid
-            JOIN {course} c ON c.id = e.courseid",
+            JOIN {course} c ON c.id = e.courseid
+            JOIN {user_info_data} ud ON ud.userid = u.id",
             $sqlwhere,
             $sqlparams);
 
@@ -86,5 +87,7 @@ class enrol_apply_manage_table extends table_sql {
     public function col_applydate($row) {
         return date("Y-m-d", $row->applydate);
     }
-    
+    public function col_ArabicName($row){
+        return $row->arabicname;
+    }
 }
