@@ -29,6 +29,7 @@ class enrol_apply_renderer extends plugin_renderer_base {
         echo $this->header();
         echo $this->heading(get_string('confirmusers', 'enrol_apply'));
         echo get_string('confirmusers_desc', 'enrol_apply');
+        
         $this->manage_form($table, $manageurl, $instance);
         echo $this->footer();
     }
@@ -45,13 +46,12 @@ class enrol_apply_renderer extends plugin_renderer_base {
             'id' => 'enrol_apply_manage_form',
             'method' => 'post',
             'action' => $manageurl->out()));
-
+            echo $this->searchbar();
         $this->manage_table($table, $instance);
-
+        
         if ($table->totalrows > 0) {
             echo html_writer::empty_tag('br');
             echo html_writer::start_tag('div', array('class' => 'formaction'));
-
             $formactions = array(
                 'confirm' => get_string('btnconfirm', 'enrol_apply'),
                 'wait' => get_string('btnwait', 'enrol_apply'),
@@ -108,7 +108,7 @@ class enrol_apply_renderer extends plugin_renderer_base {
             'id' => 'enrol_apply_info_form',
             'method' => 'post',
             'action' => $manageurl->out()));
-
+            
         $this->info_table($table,$instance);
 
         if ($table->totalrows > 0) {
@@ -137,6 +137,19 @@ class enrol_apply_renderer extends plugin_renderer_base {
         $table->sortable(true, 'id');
 
         $table->out(50, true);
+    }
+    public function searchbar(){
+       return '<div class="col-md-4">
+                    <div class="form-group  fitem  " style="float: left; margin-right: 10px;">
+                         <label class="col-form-label sr-only" for="id_realname">
+                         User full name value
+                        </label>
+                             <span data-fieldtype="text">
+                             <input type="text" class="form-control " name="realname" id="id_realname" value="" data-initial-value="">
+                            </span>
+                    </div>
+                    <input class="btn btn-primary" value="Search" type="submit" style="float"></input>
+                </div>';
     }
 
     public function application_notification_mail_body(

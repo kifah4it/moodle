@@ -30,7 +30,7 @@ class enrol_apply_manage_table extends table_sql {
 
     public $is_collapsible = false;
 
-    public function __construct($enrolid = null) {
+    public function __construct($enrolid = null,$searchQ = null) {
         parent::__construct('enrol_apply_manage_table');
 
         global $DB;
@@ -43,6 +43,11 @@ class enrol_apply_manage_table extends table_sql {
         } else {
             $sqlwhere .= " AND e.enrol = :enrol";
             $sqlparams['enrol'] = 'apply';
+        }
+
+        if($searchQ != null){
+            $sqlwhere .=" AND ud.data LIKE '%$searchQ%'";
+       //     $sqlparams['se'] = $searchQ;
         }
        
         $this->set_sql(
@@ -59,6 +64,7 @@ class enrol_apply_manage_table extends table_sql {
 
         $this->no_sorting('checkboxcolumn');
     }
+    
 
     /**
      * Get any extra classes names to add to this row in the HTML.

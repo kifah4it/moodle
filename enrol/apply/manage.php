@@ -30,7 +30,7 @@ require_once($CFG->dirroot.'/enrol/apply/renderer.php');
 $id = optional_param('id', null, PARAM_INT);
 $formaction = optional_param('formaction', null, PARAM_TEXT);
 $userenrolments = optional_param_array('userenrolments', null, PARAM_INT);
-
+$searchQ = optional_param('realname',null,PARAM_TEXT);
 require_login();
 
 $manageurlparams = array();
@@ -75,7 +75,7 @@ if ($formaction != null && $userenrolments != null) {
     redirect($manageurl);
 }
 
-$table = new enrol_apply_manage_table($id);
+$table = new enrol_apply_manage_table($id,$searchQ);
 $table->define_baseurl($manageurl);
 
 $renderer = $PAGE->get_renderer('enrol_apply');
