@@ -47,13 +47,12 @@ class enrol_apply_manage_table extends table_sql {
        
         $this->set_sql(
             'ue.id AS userenrolmentid, ue.userid, ue.status AS enrolstatus, ue.timecreated AS applydate,
-            ai.comment AS applycomment, u.*, c.fullname as course, ud.data as ArabicName',
+            ai.comment AS applycomment, u.*, c.fullname as course',
             "{user_enrolments} AS ue
             LEFT JOIN {enrol_apply_applicationinfo} ai ON ai.userenrolmentid = ue.id
             JOIN {user} u ON u.id = ue.userid
             JOIN {enrol} e ON e.id = ue.enrolid
-            JOIN {course} c ON c.id = e.courseid
-            JOIN {user_info_data} ud ON ud.userid = u.id",
+            JOIN {course} c ON c.id = e.courseid",
             $sqlwhere,
             $sqlparams);
 
@@ -80,11 +79,12 @@ class enrol_apply_manage_table extends table_sql {
         // The $row variable contains all user fields, see sql query.
         global $OUTPUT;
         $col = $OUTPUT->user_picture($row, array('popup' => true));
-        $col .= fullname($row);
+        $col .= "<a target='_blank' href=../../user/profile.php?id=".$row->userid.">".fullname($row)."</a>";
         return $col;
     }
 
     public function col_applydate($row) {
         return date("Y-m-d", $row->applydate);
     }
+    
 }

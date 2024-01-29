@@ -126,7 +126,7 @@ class enrol_apply_renderer extends plugin_renderer_base {
     public function info_table($table,$instance) {
         $columns = array(
             'fullname',
-            'applycomment');
+            'applycomment',);
         $headers = array(
             'User', // Magic happens here: The column heading will automatically be set due to column name 'fullname'.
             $instance->customtext2);
