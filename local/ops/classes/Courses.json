@@ -1,0 +1,123 @@
+[
+    {
+        "id": 3,
+        "fullname": "Intro A",
+        "displayname": "Intro A",
+        "shortname": "Intro",
+        "courseimage": "https:\/\/localhost\/pluginfile.php\/18\/course\/overviewfiles\/Interchange%20Intro%20Image.jpg",
+        "categoryid": 3,
+        "categoryname": "Foundation",
+        "sortorder": 30002,
+        "summary":"Teach with confidence, using the world's favorite English course. Interchange is a four-level, American English course that has been used by over 50 million students worldwide.<\/span><\/p>",
+"summaryformat":1,"summaryfiles":[],"overviewfiles":[{"filename":"Interchange Intro Image.jpg","filepath":"\/","filesize":91016,"fileurl":"https:\/\/localhost\/webservice\/pluginfile.php\/18\/course\/overviewfiles\/Interchange%20Intro%20Image.jpg","timemodified":1697991105,"mimetype":"image\/jpeg"}],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":6,"fullname":"Amer Dannoun"}],"enrollmentmethods":["manual","apply","fee"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"\u0645\u062f\u062e\u0644 \u0625\u0644\u0649 \u0627\u0644\u0644\u063a\u0629 \u0627\u0644\u0627\u0646\u0643\u0644\u064a\u0632\u064a\u0629","value":"\u0645\u062f\u062e\u0644 \u0625\u0644\u0649 \u0627\u0644\u0644\u063a\u0629 \u0627\u0644\u0627\u0646\u0643\u0644\u064a\u0632\u064a\u0629"}],"idnumber":"2","format":"topics","showgrades":1,"newsitems":5,"startdate":1696453200,"enddate":1727989200,"maxbytes":0,"showreports":0,"visible":1,"groupmode":1,"groupmodeforce":1,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1696417123,"timemodified":1708009976,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {"id":4,"fullname":"Ventures","displayname":"Ventures","shortname":"Vent","courseimage":"https:\/\/localhost\/pluginfile.php\/99\/course\/overviewfiles\/Ventures1.jpeg","categoryid":3,"categoryname":"Foundation","sortorder":30001,
+    "summary":"This course is specifically designed for beginner adult learners with little to no prior English language experience. It aims to develop the basic language skills you need for everyday communication in real-world situations.<\/p>",
+"summaryformat":1,"summaryfiles":[],"overviewfiles":[{"filename":"Ventures1.jpeg","filepath":"\/","filesize":26681,"fileurl":"https:\/\/localhost\/webservice\/pluginfile.php\/99\/course\/overviewfiles\/Ventures1.jpeg","timemodified":1707903856,"mimetype":"image\/jpeg"}],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1707944400,"enddate":1739480400,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1707903856,"timemodified":1707995473,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+            "id": 5,
+            "fullname": "Intro B",
+            "displayname": "Intro B",
+            "shortname": "IntB",
+            "courseimage": "https:\/\/localhost\/pluginfile.php\/103\/course\/generated\/course.svg",
+            "categoryid": 4,
+            "categoryname": "Beginner",
+            "sortorder": 40002,
+            "summary":"
+
+This course is designed for\u00a0beginner students\u00a0with\u00a0some basic knowledge of English.\u00a0It builds upon the foundation established in Interchange Intro A,\u00a0focusing on further development of essential communication skills.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708011067,"timemodified":1708011983,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                "id": 6,
+                "fullname": "Let's Talk 1",
+                "displayname": "Let's Talk 1",
+                "shortname": "ltstalk1",
+                "courseimage": "https:\/\/localhost\/pluginfile.php\/105\/course\/generated\/course.svg",
+                "categoryid": 4,
+                "categoryname": "Beginner",
+                "sortorder": 40003,
+                "summary":"
+
+Let's Talk 1 is a beginner-level English course published by Cambridge University Press. It is designed for adult learners with little or no prior knowledge of English. The course aims to develop the basic language skills you need for everyday communication in real-world situations.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708011302,"timemodified":1708011302,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                    "id": 7,
+                    "fullname": "1A",
+                    "displayname": "1A",
+                    "shortname": "1A",
+                    "courseimage": "https:\/\/localhost\/pluginfile.php\/107\/course\/generated\/course.svg",
+                    "categoryid": 4,
+                    "categoryname": "Beginner",
+                    "sortorder": 40004,
+                    "summary":"
+
+Interchange Level 1A is\u00a0a well-regarded course for beginners looking to build a solid foundation in English communication skills. Its clear explanations, engaging activities, and focus on practical application make it a popular choice for both self-study and classroom settings.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708011909,"timemodified":1708014927,"requested":0,"cacherev":1708014927,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                        "id": 8,
+                        "fullname": "1B",
+                        "displayname": "1B",
+                        "shortname": "1B",
+                        "courseimage": "https:\/\/localhost\/pluginfile.php\/110\/course\/generated\/course.svg",
+                        "categoryid": 4,
+                        "categoryname": "Beginner",
+                        "sortorder": 40001,
+                        "summary":"
+
+Interchange Level 1B is a solid choice for early beginners seeking to enhance their English communication skills in various everyday situations. Its engaging activities, clear explanations, and continued focus on practical application make it a popular choice for learners looking to progress on their journey.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708012415,"timemodified":1708012415,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                            "id": 9,
+                            "fullname": "Let's Talk 2",
+                            "displayname": "Let's Talk 2",
+                            "shortname": "ltstlk2",
+                            "courseimage": "https:\/\/localhost\/pluginfile.php\/112\/course\/generated\/course.svg",
+                            "categoryid": 5,
+                            "categoryname": "Pre-intermediate",
+                            "sortorder": 50001,
+                            "summary":"
+
+Cambridge Let's Talk 2 is an intermediate-level English course published by Cambridge University Press. It's designed for adult learners who have completed Let's Talk 1 or have a similar level of understanding. The course aims to further develop the basic language skills you need for everyday communication in real-world situations.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708012741,"timemodified":1708012741,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                                "id": 10,
+                                "fullname": "2A",
+                                "displayname": "2A",
+                                "shortname": "2A",
+                                "courseimage": "https:\/\/localhost\/pluginfile.php\/114\/course\/generated\/course.svg",
+                                "categoryid": 5,
+                                "categoryname": "Pre-intermediate",
+                                "sortorder": 50002,
+                                "summary":"
+
+Interchange Level 2A is a valuable resource for beginning-intermediate learners seeking to solidify and expand their English communication skills in various everyday situations. Its engaging activities, clear explanations, and continued focus on practical application make it a popular choice for learners looking to advance their English journey.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708013013,"timemodified":1708013013,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                                    "id": 11,
+                                    "fullname": "2B",
+                                    "displayname": "2B",
+                                    "shortname": "2B",
+                                    "courseimage": "https:\/\/localhost\/pluginfile.php\/117\/course\/generated\/course.svg",
+                                    "categoryid": 6,
+                                    "categoryname": "Intermediate",
+                                    "sortorder": 60003,
+                                    "summary":"
+
+Interchange Level 2B is a valuable resource for learners who have mastered the basics and are looking to improve their fluency and confidence in using English for various personal and social interactions. Its engaging activities, clear explanations, and continued focus on practical application make it a popular choice for learners progressing their English journey.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708013861,"timemodified":1708013861,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                                        "id": 12,
+                                        "fullname": "Let's Talk 3",
+                                        "displayname": "Let's Talk 3",
+                                        "shortname": "ltstlk3",
+                                        "courseimage": "https:\/\/localhost\/pluginfile.php\/119\/course\/generated\/course.svg",
+                                        "categoryid": 6,
+                                        "categoryname": "Intermediate",
+                                        "sortorder": 60002,
+                                        "summary":"
+
+Cambridge Let's Talk 3 is a popular and well-regarded intermediate-to-upper-intermediate English course. If you are looking for a course that will help you develop your communication skills in English and expose you to more complex topics, then Let's Talk 3 is a good option.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708014356,"timemodified":1708014356,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"},
+    {
+                                            "id": 13,
+                                            "fullname": "3A",
+                                            "displayname": "3A",
+                                            "shortname": "3A",
+                                            "courseimage": "https:\/\/localhost\/pluginfile.php\/121\/course\/generated\/course.svg",
+                                            "categoryid": 6,
+                                            "categoryname": "Intermediate",
+                                            "sortorder": 60001,
+                                            "summary":"
+
+Interchange Level 3A is a valuable resource for upper-intermediate learners seeking to enhance their fluency, confidence, and ability to communicate effectively in various real-world contexts. Its interactive activities, clear explanations, and continued focus on practical application make it a popular choice for learners progressing towards advanced English proficiency.<\/p>","summaryformat":1,"summaryfiles":[],"overviewfiles":[],"showactivitydates":true,"showcompletionconditions":true,"contacts":[{"id":2,"fullname":"Admin User"}],"enrollmentmethods":["manual","apply"],"customfields":[{"name":"Arabic Name","shortname":"arname","type":"text","valueraw":"","value":null}],"idnumber":"","format":"topics","showgrades":1,"newsitems":5,"startdate":1708030800,"enddate":1739566800,"maxbytes":0,"showreports":0,"visible":1,"groupmode":0,"groupmodeforce":0,"defaultgroupingid":0,"enablecompletion":1,"completionnotify":0,"lang":"","theme":"","marker":0,"legacyfiles":0,"calendartype":"","timecreated":1708014690,"timemodified":1708014690,"requested":0,"cacherev":1708014849,"filters":[{"filter":"displayh5p","localstate":0,"inheritedstate":1},{"filter":"activitynames","localstate":0,"inheritedstate":1},{"filter":"mathjaxloader","localstate":0,"inheritedstate":1},{"filter":"emoticon","localstate":0,"inheritedstate":1},{"filter":"urltolink","localstate":0,"inheritedstate":1},{"filter":"mediaplugin","localstate":0,"inheritedstate":1}],"courseformatoptions":[{"name":"hiddensections","value":1},{"name":"coursedisplay","value":0},{"name":"indentation","value":"1"}],"parentcat":"English"}]
