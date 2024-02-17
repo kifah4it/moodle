@@ -173,8 +173,6 @@ class local_ops_observer
                   }
                }
            }
-       var_dump(json_encode($data));
-        die();
         $ch = curl_init();
         $headers = array(
             'Accept: application/json',

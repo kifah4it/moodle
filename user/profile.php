@@ -189,14 +189,10 @@ if ($PAGE->user_allowed_editing()) {
     
     $url = new moodle_url("$CFG->wwwroot/user/profile.php", $params);
     $button = '';
-    $confirmbtn = '';
-    if(!$user_state)
-    $confirmbtn = " <a class='btn btn-success' href='https://localhost/admin/user.php?sort=name&dir=ASC&perpage=30&page=0&confirmuser=$userid&sesskey=$sesskey'>Confirm</a>";
 
     if (!$PAGE->theme->haseditswitch) {
         $button = $OUTPUT->single_button($url, $editstring);
     }
-    $PAGE->set_button($resetbutton . $button . $confirmbtn);
     //$PAGE->set_button("<a href='https://localhost/admin/user.php?sort=name&dir=ASC&perpage=30&page=0&confirmuser=25&sesskey=Akk66ryDTq'>Here</a>");
 } else {
     $USER->editing = $edit = 0;
