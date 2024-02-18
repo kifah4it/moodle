@@ -79,3 +79,25 @@ html > body #content p.links a[href*="&create="] {
 html > body #content fieldset > legend {
     font-size: 1rem;
 }
+
+/* Hide the "logout" button. */
+html > body form p.logout {
+    display: none;
+}
+
+/* Add an enmpty space after a separator to allow a line break. */
+html > body form p.links span.separator::after {
+    content: " ";
+}
+
+html > body #menu {
+    background-image: none;
+}
+
+#local-adminer-modal > .modal-dialog {
+    max-width: 100%;
+    height: 100%;
+}
+#local-adminer-modal > .modal-dialog > .modal-content {
+    height: 99vh;
+}

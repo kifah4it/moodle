@@ -41,7 +41,7 @@ if ($name) {
         throw new \Exception('Api client not found on '.$CFG->wwwroot.'/mod/jitsi/api/vendor/autoload.php');
     }
 
-    $accountbyname = $DB->get_record('jitsi_record_account', array('name' => $name));
+    $accountbyname = $DB->get_record('jitsi_record_account', ['name' => $name]);
     if ($accountbyname) {
         if ($accountbyname->inuse == 1 && $accountbyname->clientaccesstoken == null && $accountbyname->clientrefreshtoken == null) {
             $accountbyname->inuse = 0;
@@ -49,7 +49,7 @@ if ($name) {
         }
     }
 
-    $accountinuse = $DB->get_record('jitsi_record_account', array('inuse' => 1));
+    $accountinuse = $DB->get_record('jitsi_record_account', ['inuse' => 1]);
 
     unset($_SESSION[$tokensessionkey]);
     if ($accountinuse) {
@@ -80,7 +80,7 @@ if ($name) {
     $_SESSION['name'] = $name;
 }
 
-$accounttab = $DB->get_record('jitsi_record_account', array('name' => $_SESSION['name']));
+$accounttab = $DB->get_record('jitsi_record_account', ['name' => $_SESSION['name']]);
 if (!$accounttab) {
     $_SESSION[$tokensessionkey] = null;
 }
@@ -150,7 +150,7 @@ if ($CFG->jitsi_oauth_id == null || $CFG->jitsi_oauth_secret == null) {
             $link = new moodle_url('/mod/jitsi/adminaccounts.php');
             echo '<a href='.$link.'>'.get_string('back').'</a>';
 
-            $account = $DB->get_record('jitsi_record_account', array('name' => $_SESSION['name']));
+            $account = $DB->get_record('jitsi_record_account', ['name' => $_SESSION['name']]);
 
             if ($account == null) {
                 $account = new stdClass();
@@ -174,10 +174,11 @@ if ($CFG->jitsi_oauth_id == null || $CFG->jitsi_oauth_secret == null) {
 
         } catch (Google_Service_Exception $e) {
             $htmlbody = sprintf('<p>A service error occurred: <code>%s</code></p>',
-                        htmlspecialchars($e->getMessage()));
+                        htmlspecialchars($e->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401));
+
         } catch (Google_Exception $e) {
-            $htmlbody = sprintf('<p>An client error occurred: <code>%s</code></p>',
-                        htmlspecialchars($e->getMessage()));
+            $htmlbody = sprintf('<p>A service error occurred: <code>%s</code></p>',
+                        htmlspecialchars($e->getMessage(), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401));
         }
         $_SESSION[$tokensessionkey] = $client->getAccessToken();
 
