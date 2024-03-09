@@ -69,6 +69,7 @@ class completion_criteria_course extends completion_criteria {
         if ($this->id) {
             $mform->setDefault('criteria_course['.$data->id.']', 1);
         }
+        
     }
 
     /**

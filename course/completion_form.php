@@ -252,6 +252,59 @@ class course_completion_form extends moodleform {
             $mform->addElement('static', 'noroles', '', get_string('err_noroles', 'completion'));
         }
 
+        // Completion on course with grade
+        // $label = get_string('coursecompletioncondition', 'core_completion', get_string('coursegrade', 'core_completion'));
+        // $mform->addElement('header', 'course_grade', $label);
+        // Expand the condition section if it is currently enabled.
+        // $current = $completion->get_criteria(COMPLETION_CRITERIA_TYPE_COURSE_GRADE);
+        // if (!empty($current)) {
+        //     $mform->setExpanded('course_grade');
+        // }
+        $course_grade = $DB->get_field('grade_items', 'gradepass', array('courseid' => $course->id, 'itemtype' => 'course'));
+        if (!$course_grade) {
+            $course_grade = '0.00000';
+        }
+        // Course prerequisite completion criteria.
+        $label = get_string('coursecompletioncondition', 'core_completion', get_string('dependenciescompletedwithgrade', 'core_completion'));
+        $mform->addElement('header', 'courseprerequisiteswithgrade', $label);
+        // Get the list of currently specified conditions and expand the section if some are found.
+        $current = $completion->get_criteria(COMPLETION_CRITERIA_TYPE_COURSE_GRADE);
+        if (!empty($current)) {
+            $mform->setExpanded('courseprerequisites');
+        }
+
+        // Get applicable courses (prerequisites).
+        $hasselectablecourses = core_course_category::search_courses(['onlywithcompletion' => true], ['limit' => 2]);
+        unset($hasselectablecourses[$course->id]);
+        if ($hasselectablecourses) {
+            // Show multiselect box.
+            $mform->addElement('course', 'criteria_course_grade_passed', get_string('coursesavailable', 'completion'),
+                array('select', 'onlywithcompletion' => true, 'exclude' => $course->id));
+            $mform->setType('criteria_course_grade_passed', PARAM_INT);
+
+            $selectedcourses = $DB->get_fieldset_select('course_completion_criteria', 'courseinstance',
+                'course = :course AND criteriatype = :type', ['course' => $course->id, 'type' => COMPLETION_CRITERIA_TYPE_COURSE_GRADE]);
+            $mform->setDefault('criteria_course_grade_passed', $selectedcourses);
+
+            // // Map aggregation methods to context-sensitive human readable dropdown menu.
+            // $courseaggregationmenu = array();
+            // foreach ($aggregation_methods as $methodcode => $methodname) {
+            //     if ($methodcode === COMPLETION_AGGREGATION_ALL) {
+            //         $courseaggregationmenu[COMPLETION_AGGREGATION_ALL] = get_string('courseaggregation_all', 'core_completion');
+            //     } else if ($methodcode === COMPLETION_AGGREGATION_ANY) {
+            //         $courseaggregationmenu[COMPLETION_AGGREGATION_ANY] = get_string('courseaggregation_any', 'core_completion');
+            //     } else {
+            //         $courseaggregationmenu[$methodcode] = $methodname;
+            //     }
+            // }
+            // $mform->addElement('select', 'course_grade_aggregation', get_string('courseaggregation', 'core_completion'), $courseaggregationmenu);
+            // $mform->setDefault('course_grade_aggregation', $completion->get_aggregation_method(COMPLETION_CRITERIA_TYPE_COURSE_GRADE));
+        } else {
+            $mform->addElement('static', 'nocourses', '', get_string('err_nocourses', 'completion'));
+        }
+        $criteria = new completion_criteria_course_grade($params);
+        $criteria->config_form_display($mform, $course_grade);
+
         // Add common action buttons.
         $this->add_action_buttons();
 

@@ -252,3 +252,5 @@ $string['xdays'] = '{$a} days';
 
 // Deprecated since Moodle 4.0.
 $string['yourprogress'] = 'Your progress';
+// By kifah4it
+$string['dependenciescompletedwithgrade'] = 'Completion of other courses with grade';

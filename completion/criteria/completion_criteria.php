@@ -77,6 +77,14 @@ define('COMPLETION_CRITERIA_TYPE_ROLE',         7);
 define('COMPLETION_CRITERIA_TYPE_COURSE',       8);
 
 /**
+ * Course with grade completion criteria type
+ * Criteria type constant, primarily for storing criteria type in the database.
+ * developed by kifah4it
+ */
+
+define('COMPLETION_CRITERIA_TYPE_COURSE_GRADE',       9);
+
+/**
  * Criteria type constant to class name mapping.
  *
  * This global variable would be improved if it was implemented as a cache.
@@ -91,6 +99,7 @@ $COMPLETION_CRITERIA_TYPES = array(
     COMPLETION_CRITERIA_TYPE_GRADE      => 'grade',
     COMPLETION_CRITERIA_TYPE_ROLE       => 'role',
     COMPLETION_CRITERIA_TYPE_COURSE     => 'course',
+    COMPLETION_CRITERIA_TYPE_COURSE_GRADE => 'course_grade',
 );
 
 

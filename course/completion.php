@@ -36,6 +36,7 @@ require_once($CFG->dirroot.'/completion/criteria/completion_criteria_duration.ph
 require_once($CFG->dirroot.'/completion/criteria/completion_criteria_grade.php');
 require_once($CFG->dirroot.'/completion/criteria/completion_criteria_role.php');
 require_once($CFG->dirroot.'/completion/criteria/completion_criteria_course.php');
+require_once($CFG->dirroot.'/completion/criteria/completion_criteria_course_grade.php');
 require_once $CFG->libdir.'/gradelib.php';
 require_once($CFG->dirroot.'/course/completion_form.php');
 
@@ -143,6 +144,17 @@ if ($form->is_cancelled()){
     $aggregation = new completion_aggregation($aggdata);
     $aggregation->setMethod($data->role_aggregation);
     $aggregation->save();
+
+    // // Handle Course Grade aggregation.
+    // if (empty($data->course_grade_aggregation)) {
+    //     $data->course_grade_aggregation = 0;
+    // }
+
+    // $aggdata['criteriatype'] = COMPLETION_CRITERIA_TYPE_COURSE_GRADE;
+    // $aggregation = new completion_aggregation($aggdata);
+    // $aggregation->setMethod($data->course_grade_aggregation);
+    // $aggregation->save();
+
 
     // Trigger an event for course module completion changed.
     $event = \core\event\course_completion_updated::create(
