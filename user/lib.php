@@ -271,8 +271,6 @@ function user_get_default_fields() {
  * @return array|null
  */
 function user_get_user_details($user, $course = null, array $userfields = array()) {
-    var_dump($userfields);
-    die();
     global $USER, $DB, $CFG, $PAGE;
     require_once($CFG->dirroot . "/user/profile/lib.php"); // Custom field library.
     require_once($CFG->dirroot . "/lib/filelib.php");      // File handling on description and friends.
