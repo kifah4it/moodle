@@ -10,7 +10,7 @@ use core_external\external_value as Core_externalExternal_value;
 use core_external\external_api as exterapi;
 use core_external\external_warnings;
 use stdClass;
-
+use local_ops\external\Course_availability;
 class register_enroll_student extends \core_external\external_api
 {
     public static function enroll_student_parameters()
@@ -24,39 +24,77 @@ class register_enroll_student extends \core_external\external_api
             )
         );
     }
+   
     public static function enroll_student($username, $courses = array())
     {
         global $DB, $CFG;
         try {
+            $courseprereq = array();
             $user = $DB->get_record('user', ['username' => $username]);
+           // $courses_prereqs = exterapi::call_external_function('local_ops_check_course_prereq',['userid'=>$user->id,'coursesids'=>$courses]);
+         //   $courses_prereqs = Course_availability::check_course_prereq(48,$courses);
             $plugin = enrol_get_plugin('apply');
             foreach ($courses as $c) {
+                
+                $course = $DB->get_record('course',array('id' => $c));
                 $enrolmethds = $DB->get_records('enrol', array('enrol' => 'apply', 'courseid' => $c));
                 foreach ($enrolmethds as $instance) {
-                    $timestart = time();
+                    $timestart = $course->startdate;
+                    if($instance->enrolperiod > 0)
                     $timeend = $timestart + $instance->enrolperiod;
+                    else
+                    $timeend = 0;
+
                     $plugin->enrol_user($instance, $user->id, 5, $timestart, $timeend, ENROL_USER_SUSPENDED);
                 }
+
             }
+            
+                     // printf(json_encode($courses_prereqs)));
+                    //  die();
+           // return var_dump($courses_prereqs);
             return $result = array(
                 'status' => 'success',
-                'message' => var_dump($plugin)
+                'message' => '',
+               // 'courses_prereqs' => $courses_prereqs
+                // 'courses_prereqs' => [['courseid' => '1','acceptance' => false,
+                // 'prereqs'=>[['courseiname' =>'1','criteriatype' =>'2','requiredgrade' =>'3','ismatched' =>false]]]]
+
             );
         } catch (Exception $e) {
             return $result = array(
                 'status' => 'error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
+             //   'courses_prereqs' => [['courseid' => '1','acceptance' => false,
+              //   'prereqs'=>[['courseiname' =>'1','criteriatype' =>'2','requiredgrade' =>'3','ismatched' =>false]]]]
             );
         }
     }
     public static function enroll_student_returns()
     {
-
         return new Core_externalExternal_single_structure(
             array(
                 // 'success' => new Core_externalExternal_value(PARAM_BOOL, 'True if the user was created false otherwise'),
                 'status'  => new Core_externalExternal_value(PARAM_RAW, 'staus'),
                 'message' => new Core_externalExternal_value(PARAM_RAW, 'error message'),
+                // 'courses_prereqs' => new Core_externalExternal_multiple_structure(
+                //     new Core_externalExternal_single_structure(
+                //         array(
+                //             'courseid' => new Core_externalExternal_value(PARAM_RAW, 'courseid'),
+                //             'acceptance' => new Core_externalExternal_value(PARAM_BOOL, 'enroll accpeted'),
+                //             'prereqs' => new Core_externalExternal_multiple_structure(
+                //                 new Core_externalExternal_single_structure(
+                //                     array(
+                //                         'courseiname' => new Core_externalExternal_value(PARAM_RAW, 'coursiename'),
+                //                         'criteriatype' => new Core_externalExternal_value(PARAM_RAW, 'criteriatype'),
+                //                         'requiredgrade' => new Core_externalExternal_value(PARAM_RAW, 'requiredgrade'),
+                //                         'ismatched' => new Core_externalExternal_value(PARAM_BOOL, 'ismatched'),
+                //                     )
+                //                 )
+                //             )
+                //         )
+                //     )
+                // )
             )
         );
     }
@@ -140,7 +178,7 @@ class register_enroll_student extends \core_external\external_api
                 'messages' => new Core_externalExternal_multiple_structure(
                     new Core_externalExternal_multiple_structure(
                         new Core_externalExternal_value(PARAM_TEXT, 'field'),
-                        new Core_externalExternal_value(PARAM_TEXT, 'message')
+                        new Core_externalExternal_value(PARAM_TEXT, 'message'),
                     )
                 ),
             )
