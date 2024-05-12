@@ -73,4 +73,8 @@ defined('MOODLE_INTERNAL') || die();
             'eventname' => '\core\event\course_section_created',
             'callback' => 'local_ops_observer::section_created'
         ),
+        array(
+            'eventname' => '\core\event\user_loggedin',
+            'callback' => 'local_ops_observer::user_loggedin'
+        )
     );

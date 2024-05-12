@@ -2,6 +2,24 @@
 
 class local_ops_observer
 {
+    public static function user_loggedin(\core\event\user_loggedin $event){
+        // $ch = curl_init();
+        // $headers = array(
+        //     'Accept: application/json',
+        //     'Content-Type: application/json',
+        // );
+
+        // curl_setopt($ch, CURLOPT_URL, 'http://localhost:8080/ccit/public/api/v1/retriveCourses');
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($event));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // // Timeout in seconds
+        // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        // $statu = curl_exec($ch);
+    }
     //Users observers
     public static function user_created(\core\event\user_created $event)
     {
@@ -37,7 +55,22 @@ class local_ops_observer
 
     public static function user_updated(\core\event\user_updated $event)
     {
-       
+        // $ch = curl_init();
+        // $headers = array(
+        //     'Accept: application/json',
+        //     'Content-Type: application/json',
+        // );
+
+        // curl_setopt($ch, CURLOPT_URL, 'http://localhost:8080/ccit/public/api/v1/retriveCourses');
+        // curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, sesskey());
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // // Timeout in seconds
+        // curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+        // $statu = curl_exec($ch);
     }
 
 
@@ -116,6 +149,7 @@ class local_ops_observer
         global $DB;
         $groups = core_external\external_api::call_external_function('core_group_get_course_user_groups',
         ['courseid'=>$event->courseid,'userid'=>$event->userid]);
+        if(isset($groups["data"])){
         if(count($groups["data"]["groups"]) > 0){
         $gid = $groups["data"]["groups"][0]["id"];
         $cs = $DB->get_record('course_sections',['id'=>$event->objectid]);
@@ -124,11 +158,13 @@ class local_ops_observer
          $DB->update_record('course_sections',$cs);
         }
     }
+    }
     public static function section_updated(\core\event\course_section_updated $event)
     {
         global $DB;
         $groups = core_external\external_api::call_external_function('core_group_get_course_user_groups',
         ['courseid'=>$event->courseid,'userid'=>$event->userid]);
+        if(isset($groups["data"])){
         if(count($groups["data"]["groups"]) > 0){
         $gid = $groups["data"]["groups"][0]["id"];
         $cs = $DB->get_record('course_sections',['id'=>$event->objectid]);
@@ -136,6 +172,7 @@ class local_ops_observer
         
          $DB->update_record('course_sections',$cs);
         }
+    }
     }
     private static function findcatName($cat,$id){
       foreach($cat as $ca){
@@ -146,33 +183,34 @@ class local_ops_observer
     }
     private static function getCoursesData()
     {
-        global $CFG,$DB;
-        require_once($CFG->dirroot . "/course/lib.php");
-        require_once($CFG->dirroot . '/course/externallib.php');
-        // $course = $DB->get_record('course', array('id' => 1), '*', MUST_EXIST);
-        //   var_dump($course);
+    //     global $CFG,$DB;
+    //     require_once($CFG->dirroot . "/course/lib.php");
+    //     require_once($CFG->dirroot . '/course/externallib.php');
+    //     // $course = $DB->get_record('course', array('id' => 1), '*', MUST_EXIST);
+    //     //   var_dump($course);
 
-        $data = core_external\external_api::call_external_function('core_course_get_courses_by_field', [], false);
-        $courses;
-       // $rem = array_shift($courses['courses']);
-        $categories = $DB->get_records_select('course_categories',NULL);
-            $i = 0;
-           foreach($data as $cor){
-               if($i == 1){
-                array_shift($cor['courses']);
-                $courses = $cor['courses'];
-                break;
-               }
-                $i++;               
-           }
-           $data = array();
-           foreach($courses as $cor){
-               foreach($categories as $cat){
-                  if($cor['categoryid'] == $cat->id){
-                        $data[] = (array) array_merge( (array)$cor, array( 'parentcat' => self::findcatName($categories,$cat->parent) ) );
-                  }
-               }
-           }
+    //     $data = core_external\external_api::call_external_function('core_course_get_courses_by_field', [], false);
+    //     $courses;
+    //    // $rem = array_shift($courses['courses']);
+    //     $categories = $DB->get_records_select('course_categories',NULL);
+    //         $i = 0;
+    //        foreach($data as $cor){
+    //            if($i == 1){
+    //             array_shift($cor['courses']);
+    //             $courses = $cor['courses'];
+    //             break;
+    //            }
+    //             $i++;               
+    //        }
+    //        $data = array();
+    //        foreach($courses as $cor){
+    //            foreach($categories as $cat){
+    //               if($cor['categoryid'] == $cat->id){
+    //                     $data[] = (array) array_merge( (array)$cor, array( 'parentcat' => self::findcatName($categories,$cat->parent) ) );
+    //               }
+    //            }
+    //        }
+           
         $ch = curl_init();
         $headers = array(
             'Accept: application/json',
@@ -182,11 +220,12 @@ class local_ops_observer
         curl_setopt($ch, CURLOPT_URL, 'http://localhost:8080/ccit/public/api/v1/retriveCourses');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        //curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data,true));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, " ");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         // Timeout in seconds
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 
         $statu = curl_exec($ch);
         // var_dump($statu);
