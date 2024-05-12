@@ -177,7 +177,7 @@ class auth_plugin_userkey extends auth_plugin_base {
         // Identify this session as using user key auth method.
         $SESSION->userkey = true;
 
-        $this->redirect($redirecturl);
+        $this->redirect($redirecturl."?sesskey=".sesskey());
     }
 
     /**
