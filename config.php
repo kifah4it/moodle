@@ -19,12 +19,12 @@ $CFG->dboptions = array (
 );
 
 $CFG->wwwroot   = 'https://localhost';
-$CFG->dataroot  = 'I:\\MoodleWindowsInstaller\\server\\moodledata';
-$CFG->dirroot   = 'I:\\MoodleWindowsInstaller\\server\\moodle';
+$CFG->dataroot  = 'E:\\MoodleWindowsInstaller\\server\\moodledata';
+$CFG->dirroot   = 'E:\\MoodleWindowsInstaller\\server\\moodle';
 $CFG->admin     = 'admin';
 
 $CFG->directorypermissions = 0777;
-// $CFG->alternateloginurl = 'http://localhost:8080/ccit/public/login';
+$CFG->alternateloginurl = 'http://localhost:8080/ccit/public/login';
 require_once(__DIR__ . '/lib/setup.php');
 
 // There is no php closing tag in this file,
