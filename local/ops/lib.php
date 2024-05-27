@@ -9,7 +9,7 @@ function local_ops_myprofile_navigation(core_user\output\myprofile\tree $tree, $
       'SELECT ue.id,ue.userid,ue.enrolid,e.courseid,c.fullname FROM {user_enrolments} ue 
       JOIN {enrol} e ON ue.enrolid = e.id 
       JOIN {course} c ON e.courseid = c.id
-      WHERE e.enrol LIKE "apply" AND ue.status != 0 AND ue.userid = ?',
+      WHERE e.enrol LIKE "apply" AND ue.status != 0 AND ue.userid = ? AND c.format != "singleactivity"',
       [
           $user->id,
       ]

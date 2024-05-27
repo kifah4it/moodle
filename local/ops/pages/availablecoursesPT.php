@@ -1,7 +1,7 @@
 <?php
 require('../../../config.php');
 global $USER;
-$external_url = "https://localhost:8080/courses/English";
+$external_url = $CFG->APP_URL."/courses/English";
 echo "<div style='width:100%;text-align:center'>";
 echo "<h2>Congratulation!<h2><br>";
 $sql = "SELECT q.name,q.grade,q.sumgrades,(SELECT MAX(grade) from `mdl_quiz_grades` WHERE quiz = q.id AND userid = '".$USER->id."') 
@@ -26,8 +26,8 @@ LIMIT 1;";
 $rs = $DB->get_recordset_sql($sql);
 foreach($rs as $r){
     echo "<p>$r->fullname</p>";
-    echo "<img src='https://localhost/$r->courseimage' width='150px' /><br>";
-    echo "<a class='btn btn-success' href='http://localhost:8080/ccit/public/course/$r->fullname' target='_blank'>Enroll now</a>";
+    echo "<img src='$CFG->wwwroot/$r->courseimage' width='150px' /><br>";
+    echo "<a class='btn btn-success' href='$CFG->APP_URL/course/$r->fullname' target='_blank'>Enroll now</a>";
 
 }
 echo "</div>";

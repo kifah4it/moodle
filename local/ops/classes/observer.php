@@ -28,7 +28,7 @@ class local_ops_observer
         //  require_once(dirname(dirname(__FILE__)) . '/lib/datamanager.php');
 
         // Get information about the new user
-        self::notifyadminWithNewRegistration($event->relateduserid);
+       // self::notifyadminWithNewRegistration($event->relateduserid);
 
         // $user_name = get_string('name', 'user');
         // $user_email = $new_user->email;
@@ -217,7 +217,7 @@ class local_ops_observer
             'Content-Type: application/json',
         );
 
-        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8080/ccit/public/api/v1/retriveCourses');
+        curl_setopt($ch, CURLOPT_URL, $CFG->APP_URL.'/api/v1/retriveCourses');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_POST, 1);
         //curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data,true));

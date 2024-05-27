@@ -25,6 +25,7 @@ $CFG->admin     = 'admin';
 
 $CFG->directorypermissions = 0777;
 $CFG->alternateloginurl = 'http://localhost:8080/ccit/public/login';
+$CFG->APP_URL = 'http://localhost:8080/ccit/public';
 require_once(__DIR__ . '/lib/setup.php');
 
 // There is no php closing tag in this file,

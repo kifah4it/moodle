@@ -47,9 +47,8 @@ class register_enroll_student extends \core_external\external_api
 
                     $plugin->enrol_user($instance, $user->id, 5, $timestart, $timeend, ENROL_USER_SUSPENDED);
                 }
-
             }
-            
+            self::notifyadminWithNewRegistration($user->id);
                      // printf(json_encode($courses_prereqs)));
                     //  die();
            // return var_dump($courses_prereqs);
@@ -69,6 +68,38 @@ class register_enroll_student extends \core_external\external_api
               //   'prereqs'=>[['courseiname' =>'1','criteriatype' =>'2','requiredgrade' =>'3','ismatched' =>false]]]]
             );
         }
+    }
+    private static function notifyadminWithNewRegistration($userid)
+    {
+        
+        global $DB, $CFG;
+        $dir = $CFG->wwwroot;
+       // $sesskey = sesskey();
+        //Get admin ID
+            $admin = $DB->get_record('user',['username'=>'admin']);
+        // Create a new notification object
+        $table = 'notifications'; // Replace with the name of the table you want to insert data into
+        $dataobject = new stdClass();
+        $dataobject->useridfrom = $userid; // Replace with the ID of the user who created the notification
+        $dataobject->useridto = $admin->id; // Replace with the ID of the user to whom the notification was sent
+        $dataobject->subject = "New Registiration";
+        $dataobject->fullmessage = "This is a new notification.";
+        $dataobject->fullmessagehtml = "you have new Registration Request <a href='$dir/user/view.php?id=$userid'>User</a>";
+        $dataobject->fullmessageformat = 1; // 0 for plain text, 1 for HTML
+        $dataobject->smallmessage = "New Notification small message";
+        $dataobject->component = "myplugin";
+        $dataobject->eventtype = "myevent";
+        $dataobject->contexturl = ""; // Replace with the URL of the context where the notification was created
+        $dataobject->contexturlname = ""; // Replace with the display name of the context where the notification was created
+        $dataobject->timecreated = time();
+        $notificationID = $DB->insert_record($table, $dataobject);
+
+        // Insert the notification into the mdl_message_popup_notifications table
+        $table = 'message_popup_notifications';
+        $dataobject = new stdClass();
+        $dataobject->userid = $admin->id;
+        $dataobject->notificationid = $notificationID;
+        $DB->insert_record($table, $dataobject);
     }
     public static function enroll_student_returns()
     {
