@@ -30,13 +30,26 @@ class register_enroll_student extends \core_external\external_api
         global $DB, $CFG;
         try {
             $courseprereq = array();
+            $act_courses = array(); // directly activated enroled courses (like free courses) Like English placement test to be redirected to automatically 
             $user = $DB->get_record('user', ['username' => $username]);
            // $courses_prereqs = exterapi::call_external_function('local_ops_check_course_prereq',['userid'=>$user->id,'coursesids'=>$courses]);
          //   $courses_prereqs = Course_availability::check_course_prereq(48,$courses);
             $plugin = enrol_get_plugin('apply');
             foreach ($courses as $c) {
-                
                 $course = $DB->get_record('course',array('id' => $c));
+                $freeEnrol = $DB->get_record('enrol',array('courseid'=> $c,'status'=>'0','name'=>'free'));
+                if($freeEnrol != null){
+                    $plugin = enrol_get_plugin('self');
+                    $timestart = $course->startdate;
+                    if($freeEnrol->enrolperiod > 0)
+                    $timeend = $timestart + $freeEnrol->enrolperiod;
+                    else
+                    $timeend = 0;
+                    $plugin->enrol_user($freeEnrol, $user->id, 5, $timestart, $timeend, ENROL_USER_ACTIVE);
+                    $act_courses[]=['name'=>$course->fullname,'url'=>$CFG->wwwroot.'/course/view.php?id='.$course->id];
+                }
+                else{
+
                 $enrolmethds = $DB->get_records('enrol', array('enrol' => 'apply', 'courseid' => $c));
                 foreach ($enrolmethds as $instance) {
                     $timestart = $course->startdate;
@@ -48,6 +61,7 @@ class register_enroll_student extends \core_external\external_api
                     $plugin->enrol_user($instance, $user->id, 5, $timestart, $timeend, ENROL_USER_SUSPENDED);
                 }
             }
+            }
             self::notifyadminWithNewRegistration($user->id);
                      // printf(json_encode($courses_prereqs)));
                     //  die();
@@ -55,6 +69,7 @@ class register_enroll_student extends \core_external\external_api
             return $result = array(
                 'status' => 'success',
                 'message' => '',
+                'act_courses' => $act_courses
                // 'courses_prereqs' => $courses_prereqs
                 // 'courses_prereqs' => [['courseid' => '1','acceptance' => false,
                 // 'prereqs'=>[['courseiname' =>'1','criteriatype' =>'2','requiredgrade' =>'3','ismatched' =>false]]]]
@@ -64,6 +79,7 @@ class register_enroll_student extends \core_external\external_api
             return $result = array(
                 'status' => 'error',
                 'message' => $e->getMessage(),
+                'act_courses' => null
              //   'courses_prereqs' => [['courseid' => '1','acceptance' => false,
               //   'prereqs'=>[['courseiname' =>'1','criteriatype' =>'2','requiredgrade' =>'3','ismatched' =>false]]]]
             );
@@ -108,6 +124,12 @@ class register_enroll_student extends \core_external\external_api
                 // 'success' => new Core_externalExternal_value(PARAM_BOOL, 'True if the user was created false otherwise'),
                 'status'  => new Core_externalExternal_value(PARAM_RAW, 'staus'),
                 'message' => new Core_externalExternal_value(PARAM_RAW, 'error message'),
+                'act_courses' => new Core_externalExternal_multiple_structure(
+                    new Core_externalExternal_multiple_structure(
+                        new Core_externalExternal_value(PARAM_TEXT, 'course name'),
+                        new Core_externalExternal_value(PARAM_TEXT, 'course url'),
+                    ),'active courses',VALUE_OPTIONAL,null
+                ),
                 // 'courses_prereqs' => new Core_externalExternal_multiple_structure(
                 //     new Core_externalExternal_single_structure(
                 //         array(
@@ -157,7 +179,7 @@ class register_enroll_student extends \core_external\external_api
             'username' => $username, 'password' => $password,
             'firstname' => $firstname, 'lastname' => $lastname, 'email' => $email, 'customprofilefields' => $customfields
         ]);
-
+       
         // if user created successfully
         try {
             if($result['error'] && $result["exception"]->errorcode != "auth_emailnoemail"){
@@ -188,7 +210,7 @@ class register_enroll_student extends \core_external\external_api
                     'messages' => $messages
                 );
             }
-
+                        
             return $result;
         } catch (Exception $e) {
             $messages = array();
