@@ -136,4 +136,23 @@ $capabilities = [
             'teacher' => CAP_ALLOW,
         ],
     ],
+
+    'mod/jitsi:viewrecords' => [
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'guest' => CAP_ALLOW,
+            'user' => CAP_ALLOW,
+        ],
+    ],
+
+    'mod/jitsi:viewexternallink' => [
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_MODULE,
+        'archetypes' => [
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW,
+            'teacher' => CAP_ALLOW,
+        ],
+    ],
 ];

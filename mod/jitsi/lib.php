@@ -93,10 +93,8 @@ function jitsi_add_instance($jitsi,  $mform = null) {
     $time = time();
     $jitsi->timecreated = $time;
     $cmid = $jitsi->coursemodule;
-    $jitsi->token = bin2hex(random_bytes(32));
     $jitsi->id = $DB->insert_record('jitsi', $jitsi);
     jitsi_update_calendar($jitsi, $cmid);
-
     return $jitsi->id;
 }
 
@@ -280,8 +278,7 @@ function string_sanitize($string, $forcelowercase = true, $anal = false) {
 function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jitsi, $universal = false,
         $user = null) {
     global $CFG, $DB, $PAGE, $USER;
-    $sessionnorm = str_replace([' ', ':', '"', 'º', 'ª', '{', '}', '@', '[', ']', '^', '_', '{',
-            '|', '}', '~', '@', '·', '#', '$', '~', '%', '½', '½', '%', ], '', $session);
+    $sessionnorm = normalizesessionname($session);
     if ($teacher == 1) {
         $teacher = true;
         $affiliation = "owner";
@@ -368,7 +365,7 @@ function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jits
     if ($user == null) {
         if ($CFG->jitsi_livebutton == 1 && has_capability('mod/jitsi:record', $PAGE->context)
             && $account != null && $universal == false
-            && ($CFG->jitsi_streamingoption == 1)) {
+            && ($CFG->jitsi_streamingoption == 1) && $jitsi->sessionwithtoken == 0) {
             echo "<div class=\"text-right\">";
             echo "<div class=\"custom-control custom-switch\">";
             echo "<input type=\"checkbox\" class=\"custom-control-input\" id=\"recordSwitch\"";
@@ -386,6 +383,23 @@ function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jits
     echo "</div></div>";
     echo "<hr>";
 
+    echo '<style>
+    .cuadrado-wrapper {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .jitsi-container {
+        width: calc(90vw);
+        height: calc(90vw * 9 / 16);
+        max-width: calc(90vh * 16 / 9);
+        max-height: calc(90vh);
+    }
+    </style>';
+    echo '<div class="cuadrado-wrapper"><div class="jitsi-container" id="jitsi-container"></div></div>';
+
     echo "<script>\n";
     echo "if (document.getElementById(\"recordSwitch\") != null) {\n";
     echo "  document.getElementById(\"recordSwitch\").disabled = true;\n";
@@ -395,6 +409,20 @@ function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jits
     echo "const domain = \"".$CFG->jitsi_domain."\";\n";
     echo "const options = {\n";
     echo "configOverwrite: {\n";
+
+    echo "breakoutRooms: {";
+    if (get_config('mod_jitsi', 'allowbreakoutrooms') == '1') {
+        echo "    hideAddRoomButton: false,";
+        echo "    hideAutoAssignButton: false,";
+        echo "    hideJoinRoomButton: false,";
+    } else {
+        echo "    hideAddRoomButton: true,";
+        echo "    hideAutoAssignButton: true,";
+        echo "    hideJoinRoomButton: true,";
+    }
+    echo "},";
+
+    echo "subject: '".$jitsi->name."',\n";
     echo "disableSelfView: false,\n";
     echo "defaultLanguage: '".current_language()."',\n";
     echo "disableInviteFunctions: true,\n";
@@ -462,8 +490,18 @@ function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jits
     echo "disableProfile: true,\n";
     echo "prejoinPageEnabled: false,";
     echo "channelLastN: ".$CFG->jitsi_channellastcam.",\n";
-    echo "startWithAudioMuted: true,\n";
-    echo "startWithVideoMuted: true,\n";
+
+    if (get_config('mod_jitsi', 'startwithaudiomuted') == '1') {
+        echo "startWithAudioMuted: true,\n";
+    } else {
+        echo "startWithAudioMuted: false,\n";
+    }
+
+    if (get_config('mod_jitsi', 'startwithvideomuted') == '1') {
+        echo "startWithVideoMuted: true,\n";
+    } else {
+        echo "startWithVideoMuted: false,\n";
+    }
     echo "},\n";
 
     $appid8x8 = get_config('jitsi', '8x8app_id');
@@ -548,15 +586,15 @@ function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jits
             echo "parentNode: document.querySelector('#region-main'),\n";
         }
     } else {
-        echo "parentNode: document.querySelector('#region-main'),\n";
+        echo "parentNode: document.querySelector('#jitsi-container'),\n";
     }
     echo "interfaceConfigOverwrite:{\n";
     echo "TOOLBAR_BUTTONS: ".$buttons.",\n";
     echo "SHOW_JITSI_WATERMARK: true,\n";
     echo "JITSI_WATERMARK_LINK: '".$CFG->jitsi_watermarklink."',\n";
     echo "},\n";
-    echo "width: '100%',\n";
-    echo "height: 650,\n";
+    echo "width: '100%',";
+    echo "height: '100%',";
     echo "}\n";
     echo "const api = new JitsiMeetExternalAPI(domain, options);\n";
     echo "api.addListener('videoConferenceJoined', () => {\n";
@@ -1005,6 +1043,335 @@ function createsession($teacher, $cmid, $avatar, $nombre, $session, $mail, $jits
 }
 
 /**
+ * Create privatesession
+ * @param int $teacher - Moderation
+ * @param int $cmid - Course module
+ * @param string $avatar - Avatar
+ * @param string $nombre - Name
+ * @param string $session - sesssion name
+ * @param string $mail - mail
+ * @param stdClass $jitsi - Jitsi session
+ * @param bool $universal - Say if is universal session
+ * @param stdClass $user - User object
+ */
+function createsessionpriv($teacher, $cmid, $avatar, $nombre, $session, $mail, $jitsi, $universal = false,
+        $user = null) {
+    global $CFG, $DB, $PAGE, $USER;
+    $sessionnorm = normalizesessionname($session);
+    if ($teacher == 1) {
+        $teacher = true;
+        $affiliation = "owner";
+    } else {
+        $teacher = false;
+        $affiliation = "member";
+    }
+    if ($user != null) {
+        $context = context_system::instance();
+    } else {
+        $context = context_module::instance($cmid);
+    }
+
+    if ($universal == false) {
+        if (!has_capability('mod/jitsi:view', $context)) {
+            notice(get_string('noviewpermission', 'jitsi'));
+        }
+    }
+
+    echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js\"></script>";
+    echo "<script src=\"https://".$CFG->jitsi_domain."/external_api.js\"></script>\n";
+
+    $streamingoption = '';
+    if (($CFG->jitsi_livebutton == 1) && (has_capability('mod/jitsi:record', $PAGE->context))
+        && ($CFG->jitsi_streamingoption == 0)) {
+        $streamingoption = 'livestreaming';
+    }
+
+    $youtubeoption = '';
+    if ($CFG->jitsi_shareyoutube == 1) {
+        $youtubeoption = 'sharedvideo';
+    }
+    $bluroption = '';
+    if ($CFG->jitsi_blurbutton == 1) {
+        $bluroption = 'select-background';
+    }
+    $security = '';
+    if ($CFG->jitsi_securitybutton == 1) {
+        $security = 'security';
+    }
+    $record = '';
+    if ($CFG->jitsi_record == 1 && has_capability('mod/jitsi:record', $PAGE->context)) {
+        $record = 'recording';
+    }
+    $invite = '';
+    $muteeveryone = '';
+    $mutevideoeveryone = '';
+    if (has_capability('mod/jitsi:moderation', $PAGE->context)) {
+        $muteeveryone = 'mute-everyone';
+        $mutevideoeveryone = 'mute-video-everyone';
+    }
+
+    $participantspane = '';
+    if (has_capability('mod/jitsi:moderation', $PAGE->context) || $CFG->jitsi_participantspane == 1 ) {
+        $participantspane = 'participants-pane';
+    }
+
+    $raisehand = '';
+    if ($CFG->jitsi_raisehand == 1 ) {
+        $raisehand = 'raisehand';
+    }
+
+    $whiteboard = '';
+    if ($CFG->jitsi_whiteboard == 1 ) {
+        $whiteboard = 'whiteboard';
+    }
+
+    $buttons = "['microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+        'fodeviceselection', 'hangup', 'chat', '".$record."', 'etherpad', '".$youtubeoption."',
+        'settings', '".$raisehand."', 'videoquality', '".$streamingoption."','filmstrip', '".$invite."', 'stats',
+        'shortcuts', 'tileview', '".$bluroption."', 'download', 'help', '".$muteeveryone."',
+        '".$mutevideoeveryone."', '".$security."', '".$participantspane."', '".$whiteboard."']";
+
+    echo "<div class=\"row\">";
+    echo "<div class=\"col-sm\">";
+
+    $account = $DB->get_record('jitsi_record_account', ['inuse' => 1]);
+
+    echo "<div class=\"row\">";
+    echo "<div class=\"col-sm-9\">";
+    echo "<div id=\"state\"><div class=\"alert alert-light\" role=\"alert\"></div></div>";
+    echo "</div>";
+    echo "<div class=\"col-sm-3 text-right\">";
+
+    echo "</div>";
+    echo "</div>";
+
+    echo "</div></div>";
+    echo "<hr>";
+
+    echo "<script>\n";
+    echo "if (document.getElementById(\"recordSwitch\") != null) {\n";
+    echo "  document.getElementById(\"recordSwitch\").disabled = true;\n";
+    echo "  setTimeout(function() { document.getElementById(\"recordSwitch\").disabled = false; }, 5000);\n";
+    echo "}\n";
+
+    echo "const domain = \"".$CFG->jitsi_domain."\";\n";
+    echo "const options = {\n";
+    echo "configOverwrite: {\n";
+
+    echo "breakoutRooms: {";
+    if (get_config('mod_jitsi', 'allowbreakoutrooms') == '1') {
+        echo "    hideAddRoomButton: false,";
+        echo "    hideAutoAssignButton: false,";
+        echo "    hideJoinRoomButton: false,";
+    } else {
+        echo "    hideAddRoomButton: true,";
+        echo "    hideAutoAssignButton: true,";
+        echo "    hideJoinRoomButton: true,";
+    }
+    echo "},";
+
+    echo "subject: '".$jitsi->name."',\n";
+    echo "disableSelfView: false,\n";
+    echo "defaultLanguage: '".current_language()."',\n";
+    echo "disableInviteFunctions: true,\n";
+    echo "recordingService: {\n";
+    if ($CFG->jitsi_livebutton == 1) {
+        echo "enabled: true,\n";
+    } else {
+        echo "enabled: false,\n";
+    }
+    echo "},\n";
+    echo "remoteVideoMenu: {\n";
+    echo "disableGrantModerator: true, \n";
+    echo "},\n";
+
+    echo "buttonsWithNotifyClick: [
+           {
+                key: 'camera',
+                preventExecution: false
+           },
+           {
+                key: 'desktop',
+                preventExecution: false
+           },
+           {
+                key: 'tileview',
+                preventExecution: false
+           },
+           {
+                key: 'chat',
+                preventExecution: false
+           },
+           {
+                key: 'chat',
+                preventExecution: false
+           },
+           {
+                key: 'microphone',
+                preventExecution: false
+           },
+           {
+                key: '__end',
+                preventExecution: true
+           }
+    ],\n";
+
+    echo "disableDeepLinking: true,\n";
+
+    if (!has_capability('mod/jitsi:moderation', $PAGE->context)) {
+        echo "remoteVideoMenu: {\n";
+        echo "    disableKick: true,\n";
+        echo "    disableGrantModerator: true\n";
+        echo "},\n";
+        echo "disableRemoteMute: true,\n";
+    }
+
+    if ($CFG->jitsi_reactions == 0) {
+        echo "disableReactions: true,\n";
+    }
+
+    if ($CFG->jitsi_livebutton == 0) {
+        echo "liveStreamingEnabled: false,\n";
+    }
+
+    echo "toolbarButtons: ".$buttons.",\n";
+    echo "disableProfile: true,\n";
+    echo "prejoinPageEnabled: false,";
+    echo "channelLastN: ".$CFG->jitsi_channellastcam.",\n";
+    if (get_config('mod_jitsi', 'startwithaudiomuted') == '1') {
+        echo "startWithAudioMuted: true,\n";
+    } else {
+        echo "startWithAudioMuted: false,\n";
+    }
+
+    if (get_config('mod_jitsi', 'startwithvideomuted') == '1') {
+        echo "startWithVideoMuted: true,\n";
+    } else {
+        echo "startWithVideoMuted: false,\n";
+    }
+    echo "},\n";
+
+    $appid8x8 = get_config('jitsi', '8x8app_id');
+
+    if (get_config('jitsi', 'tokentype') == '2') {
+        $header = json_encode([
+            "kid" => get_config('jitsi', '8x8apikey_id'),
+            "typ" => "JWT",
+            "alg" => "RS256",
+        ]);
+
+        $payload = json_encode([
+            'iss' => 'chat',
+            'aud' => 'jitsi',
+            'exp' => time() + 24 * 3600,
+            'nbf' => time() - 10,
+            'room' => '*',
+            'sub' => $appid8x8,
+            'context' => [
+                'user' => [
+                    'moderator' => has_capability('mod/jitsi:moderation', $PAGE->context),
+                    'email' => $mail,
+                    'name' => $nombre,
+                    'avatar' => $avatar,
+                    'id' => "",
+                ],
+                'features' => [
+                    'recording' => $teacher,
+                    'livestreaming' => $teacher,
+                    'transcription' => $teacher,
+                    'outbound-call' => $teacher,
+                ],
+            ],
+        ]);
+        echo "roomName: \"".$appid8x8."/".urlencode($sessionnorm)."\",\n";
+        $payloadencoded = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+        $headerencoded = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+        openssl_sign( $headerencoded . "." . $payloadencoded, $signature, get_config('jitsi', 'privatykey'), OPENSSL_ALGO_SHA256);
+    } else if (set_config('jitsi', 'tokentype') == '1') {
+        $header = json_encode([
+            "kid" => "jitsi/custom_key_name",
+            "typ" => "JWT",
+            "alg" => "HS256",
+        ], JSON_UNESCAPED_SLASHES);
+        $base64urlheader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+        $payload = json_encode([
+            "context" => [
+                "user" => [
+                    "affiliation" => $affiliation,
+                    "avatar" => $avatar,
+                    "name" => $nombre,
+                    "email" => $mail,
+                    "id" => "",
+                ],
+                "group" => "",
+            ],
+            "aud" => "jitsi",
+            "iss" => $CFG->jitsi_app_id,
+            "sub" => $CFG->jitsi_domain,
+            "room" => urlencode($sessionnorm),
+            "exp" => time() + 24 * 3600,
+            "moderator" => has_capability('mod/jitsi:moderation', $PAGE->context),
+        ], JSON_UNESCAPED_SLASHES);
+        echo "roomName: \"".urlencode($sessionnorm)."\",\n";
+        $payloadencoded = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+        $headerencoded = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+        $signature = hash_hmac('sha256', $headerencoded . "." . $payloadencoded, $CFG->jitsi_secret, true);
+    }
+
+    if ((get_config('jitsi', 'tokentype') == '1' && ($CFG->jitsi_app_id != null && $CFG->jitsi_secret != null))
+        || get_config('jitsi', 'tokentype') == '2') {
+        $signatureencoded = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+        $jwt = $headerencoded . "." . $payloadencoded . "." . $signatureencoded;
+        echo "jwt: \"".$jwt."\",\n";
+    }
+
+    if ($CFG->branch < 36) {
+        $themeconfig = theme_config::load($CFG->theme);
+        if ($CFG->theme == 'boost' || in_array('boost', $themeconfig->parents)) {
+            echo "parentNode: document.querySelector('#region-main .card-body'),\n";
+        } else {
+            echo "parentNode: document.querySelector('#region-main'),\n";
+        }
+    } else {
+        echo "parentNode: document.querySelector('#jitsi-container'),\n";
+    }
+    echo "interfaceConfigOverwrite:{\n";
+    echo "TOOLBAR_BUTTONS: ".$buttons.",\n";
+    echo "SHOW_JITSI_WATERMARK: true,\n";
+    echo "JITSI_WATERMARK_LINK: '".$CFG->jitsi_watermarklink."',\n";
+    echo "},\n";
+    echo "width: '100%',\n";
+    echo "height: '100%',\n";
+    echo "}\n";
+    echo "const api = new JitsiMeetExternalAPI(domain, options);\n";
+
+    if ($CFG->jitsi_finishandreturn == 1) {
+        echo "api.on('readyToClose', () => {\n";
+        echo "    api.dispose();\n";
+        if ($universal == false && $user == null) {
+            echo "    location.href=\"".$CFG->wwwroot."/mod/jitsi/view.php?id=".$cmid."\";";
+        } else if ($universal == true && $user == null) {
+            echo "    location.href=\"".$CFG->wwwroot."/mod/jitsi/formuniversal.php?t=".$jitsi->token."\";";
+        } else if ($user != null) {
+            echo "    location.href=\"".$CFG->wwwroot."/mod/jitsi/viewpriv.php?user=".$user."\";";
+        }
+        echo  "});\n";
+    }
+
+    if ($CFG->jitsi_password != null) {
+        echo "api.addEventListener('participantRoleChanged', function(event) {\n";
+        echo "    if (event.role === \"moderator\") {\n";
+        echo "        api.executeCommand('password', '".$CFG->jitsi_password."');\n";
+        echo "    }\n";
+        echo "});\n";
+        echo "api.on('passwordRequired', function () {\n";
+        echo "    api.executeCommand('password', '".$CFG->jitsi_password."');\n";
+        echo "});\n";
+    }
+    echo "</script>\n";
+}
+
+/**
  * Check if a date is out of time
  * @param stdClass $jitsi jitsi instance
  */
@@ -1179,9 +1546,7 @@ function deleterecordyoutube($idsource) {
 
             $_SESSION[$tokensessionkey] = $account->clientaccesstoken;
             $client->setAccessToken($_SESSION[$tokensessionkey]);
-            $t = time();
-            $timediff = $t - $account->tokencreated;
-            if ($timediff > 3599) {
+            if ($client->isAccessTokenExpired()) {
                 $newaccesstoken = $client->fetchAccessTokenWithRefreshToken($account->clientrefreshtoken);
                 try {
                     $account->clientaccesstoken = $newaccesstoken["access_token"];
@@ -1317,6 +1682,26 @@ function getminutes($contextinstanceid, $userid) {
 }
 
 /**
+ * Counts the minutes of a user in the current session
+ * @param id $contextinstanceid - context instance
+ * @param id $userid - user id
+ * @param int $init - initial time
+ * @param int $end - end time
+ */
+function getminutesdates($contextinstanceid, $userid, $init, $end) {
+    global $DB, $USER;
+    $sqlminutos = 'SELECT COUNT(*) AS minutes FROM {logstore_standard_log}
+                   WHERE userid = :userid AND contextinstanceid = :contextinstanceid
+                   AND action = \'participating\' AND timecreated BETWEEN :init AND :end';
+    $params = ['userid' => $userid,
+        'contextinstanceid' => $contextinstanceid,
+        'init' => $init,
+        'end' => $end];
+    $minutos = $DB->get_record_sql($sqlminutos, $params);
+    return $minutos->minutes;
+}
+
+/**
  * Add a get_coursemodule_info function in case any jitsi type wants to add 'extra' information
  * for the course (see resource).
  *
@@ -1410,11 +1795,11 @@ function update_completition($cm) {
  */
 function doembedable($idvideo) {
     global $DB;
-    $client = getclientgoogleapi();
-    $youtube = new Google_Service_YouTube($client);
 
     $source = $DB->get_record('jitsi_source_record', ['link' => $idvideo]);
     $account = $DB->get_record('jitsi_record_account', ['id' => $source->account]);
+    $client = getclientgoogleapibyaccount($account);
+    $youtube = new Google_Service_YouTube($client);
 
     try {
         $listresponse = $youtube->videos->listVideos("status", ['id' => $idvideo]);
@@ -1448,6 +1833,7 @@ function doembedable($idvideo) {
         senderror($jitsi->id, $source->userid, 'ERROR doembedable: '.$e->getMessage(), $source);
         return false;
     }
+
     return $updateresponse;
 }
 
@@ -1475,39 +1861,34 @@ function togglestate($idvideo) {
     $_SESSION[$tokensessionkey] = $account->clientaccesstoken;
     $client->setAccessToken($_SESSION[$tokensessionkey]);
 
-    $t = time();
-    $timediff = $t - $account->tokencreated;
-
-    if ($timediff > 3599) {
-        if ($timediff > 3599) {
-            $newaccesstoken = $client->fetchAccessTokenWithRefreshToken($account->clientrefreshtoken);
-            try {
-                $account->clientaccesstoken = $newaccesstoken["access_token"];
-                $newrefreshaccesstoken = $client->getRefreshToken();
-                $newrefreshaccesstoken = $client->getRefreshToken();
-                $account->clientrefreshtoken = $newrefreshaccesstoken;
-                $account->tokencreated = time();
-            } catch (Google_Service_Exception $e) {
-                if ($account->inuse == 1) {
-                    $account->inuse = 0;
-                }
-                $account->clientaccesstoken = null;
-                $account->clientrefreshtoken = null;
-                $account->tokencreated = 0;
-                $DB->update_record('jitsi_record_account', $account);
-                $client->revokeToken();
-                return false;
-            } catch (Google_Exception $e) {
-                if ($account->inuse == 1) {
-                    $account->inuse = 0;
-                }
-                $account->clientaccesstoken = null;
-                $account->clientrefreshtoken = null;
-                $account->tokencreated = 0;
-                $DB->update_record('jitsi_record_account', $account);
-                $client->revokeToken();
-                return false;
+    if ($client->isAccessTokenExpired()) {
+        $newaccesstoken = $client->fetchAccessTokenWithRefreshToken($account->clientrefreshtoken);
+        try {
+            $account->clientaccesstoken = $newaccesstoken["access_token"];
+            $newraccesstfreshaccesstoken = $client->getRefreshToken();
+            $newrefreshaccesstoken = $client->getRefreshToken();
+            $account->clientrefreshtoken = $newrefreshaccesstoken;
+            $account->tokencreated = time();
+        } catch (Google_Service_Exception $e) {
+            if ($account->inuse == 1) {
+                $account->inuse = 0;
             }
+            $account->clientaccesstoken = null;
+            $account->clientrefreshtoken = null;
+            $account->tokencreated = 0;
+            $DB->update_record('jitsi_record_account', $account);
+            $client->revokeToken();
+            return false;
+        } catch (Google_Exception $e) {
+            if ($account->inuse == 1) {
+                $account->inuse = 0;
+            }
+            $account->clientaccesstoken = null;
+            $account->clientrefreshtoken = null;
+            $account->tokencreated = 0;
+            $DB->update_record('jitsi_record_account', $account);
+            $client->revokeToken();
+            return false;
         }
     }
 
@@ -1587,10 +1968,62 @@ function getclientgoogleapi() {
     $_SESSION[$tokensessionkey] = $account->clientaccesstoken;
     $client->setAccessToken($_SESSION[$tokensessionkey]);
 
-    $t = time();
-    $timediff = $t - $account->tokencreated;
+    if ($client->isAccessTokenExpired()) {
+        $newaccesstoken = $client->fetchAccessTokenWithRefreshToken($account->clientrefreshtoken);
+        try {
+            $account->clientaccesstoken = $newaccesstoken["access_token"];
+            $newrefreshaccesstoken = $client->getRefreshToken();
+            $newrefreshaccesstoken = $client->getRefreshToken();
+            $account->clientrefreshtoken = $newrefreshaccesstoken;
+            $account->tokencreated = time();
+        } catch (Google_Service_Exception $e) {
+            if ($account->inuse == 1) {
+                $account->inuse = 0;
+            }
+            $account->clientaccesstoken = null;
+            $account->clientrefreshtoken = null;
+            $account->tokencreated = 0;
+            $DB->update_record('jitsi_record_account', $account);
+            $client->revokeToken();
+            return false;
+        } catch (Google_Exception $e) {
+            if ($account->inuse == 1) {
+                $account->inuse = 0;
+            }
+            $account->clientaccesstoken = null;
+            $account->clientrefreshtoken = null;
+            $account->tokencreated = 0;
+            $DB->update_record('jitsi_record_account', $account);
+            $client->revokeToken();
+            return false;
+        }
+    }
+    return $client;
+}
 
-    if ($timediff > 3599) {
+/**
+ * Get client google api
+ * @param stdClass $account - Account to get client
+ * @return Google_Client - Client google api
+ */
+function getclientgoogleapibyaccount($account) {
+    global $CFG, $DB;
+    if (!file_exists(__DIR__ . '/api/vendor/autoload.php')) {
+        throw new \Exception('please run "composer require google/apiclient:~2.0" in "' . __DIR__ .'"');
+    }
+    require_once(__DIR__ . '/api/vendor/autoload.php');
+
+    $client = new Google_Client();
+
+    $client->setClientId($CFG->jitsi_oauth_id);
+    $client->setClientSecret($CFG->jitsi_oauth_secret);
+
+    $tokensessionkey = 'token-' . "https://www.googleapis.com/auth/youtube";
+
+    $_SESSION[$tokensessionkey] = $account->clientaccesstoken;
+    $client->setAccessToken($_SESSION[$tokensessionkey]);
+
+    if ($client->isAccessTokenExpired()) {
         $newaccesstoken = $client->fetchAccessTokenWithRefreshToken($account->clientrefreshtoken);
         try {
             $account->clientaccesstoken = $newaccesstoken["access_token"];
@@ -1667,13 +2100,13 @@ function changeaccount() {
 }
 
 /**
-  * Send an error message to a user in a Jitsi session.
-  *
-  * @param object $jitsi Object representing the Jitsi session.
-  * @param object $user Object representing the user to whom the error message will be sent.
-  * @param string $error Error message to be sent to the user.
-  * @param string $source Source of the error.
-  */
+ * Send an error message to a user in a Jitsi session.
+ *
+ * @param object $jitsi Object representing the Jitsi session.
+ * @param object $user Object representing the user to whom the error message will be sent.
+ * @param string $error Error message to be sent to the user.
+ * @param string $source Source of the error.
+ */
 function senderror($jitsi, $user, $error, $source) {
     global $PAGE, $DB, $CFG;
     $jitsiob = $DB->get_record('jitsi', ['id' => $jitsi]);
@@ -1708,4 +2141,16 @@ function senderror($jitsi, $user, $error, $source) {
     $event->add_record_snapshot('course', $PAGE->course);
     $event->add_record_snapshot('jitsi', $jitsiob);
     $event->trigger();
+}
+
+
+/**
+ * Normalizes the session name by removing any special characters or spaces.
+ *
+ * @param string $session The session name to be normalized.
+ * @return string The normalized session name.
+ */
+function normalizesessionname($session) {
+    $normalized = preg_replace('/[^a-zA-Z0-9\-_]/', '', $session);
+    return $normalized;
 }

@@ -666,6 +666,7 @@ class mod_jitsi_external extends external_api {
         $result['error'] = '';
         $result['user'] = $author->id;
         $result['usercomplete'] = $author->firstname.' '.$author->lastname;
+        doembedable($sourcealmacenada->link);
         return $result;
     }
 
@@ -779,6 +780,13 @@ class mod_jitsi_external extends external_api {
             $contentdetails = new Google_Service_YouTube_LiveBroadcastContentDetails();
             $contentdetails->setEnableAutoStart(true);
             $contentdetails->setEnableAutoStop(true);
+            if (get_config('mod_jitsi', 'latency') == 0) {
+                $contentdetails->setLatencyPreference("normal");
+            } else if (get_config('mod_jitsi', 'latency') == 1) {
+                $contentdetails->setLatencyPreference("low");
+            } else if (get_config('mod_jitsi', 'latency') == 2) {
+                $contentdetails->setLatencyPreference("ultralow");
+            }
 
             $broadcastinsert = new Google_Service_YouTube_LiveBroadcast();
             $broadcastinsert->setSnippet($broadcastsnippet);

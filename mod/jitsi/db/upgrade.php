@@ -548,6 +548,43 @@ function xmldb_jitsi_upgrade($oldversion) {
         upgrade_mod_savepoint(true, 2023052901, 'jitsi');
     }
 
+    if ($oldversion < 2023111500) {
+
+        // Define field inqueue to be added to jitsi_record_account.
+        $table = new xmldb_table('jitsi');
+        $field = new xmldb_field('sessionwithtoken', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'sourcerecord');
+
+        // Conditionally launch add field inqueue.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        $field = new xmldb_field('tokeninvitacion', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Conditionally launch add field inqueue.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Jitsi savepoint reached.
+        upgrade_mod_savepoint(true, 2023111500, 'jitsi');
+    }
+
+    if ($oldversion < 2024011200) {
+        $table = new xmldb_table('jitsi');
+        $field = new xmldb_field('tokeninterno', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $records = $DB->get_records('jitsi');
+        foreach ($records as $record) {
+            $record->tokeninterno = bin2hex(random_bytes(32));
+            $DB->update_record('jitsi', $record);
+        }
+        upgrade_mod_savepoint(true, 2024011200, 'jitsi');
+    }
+
     /*
      * And that's all. Please, examine and understand the 3 example blocks above. Also
      * it's interesting to look how other modules are using this script. Remember that

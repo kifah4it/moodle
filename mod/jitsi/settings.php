@@ -90,6 +90,15 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configcheckbox('mod_jitsi/selfdeclaredmadeforkids', get_string('forkids', 'jitsi'),
         get_string('forkidsex', 'jitsi'), 0));
 
+    $settings->add(new admin_setting_configcheckbox('mod_jitsi/startwithaudiomuted', get_string('startwithaudiomuted', 'jitsi'),
+        get_string('startwithaudiomutedex', 'jitsi'), 1));
+
+    $settings->add(new admin_setting_configcheckbox('mod_jitsi/startwithvideomuted', get_string('startwithvideomuted', 'jitsi'),
+        get_string('startwithvideomutedex', 'jitsi'), 1));
+
+    $settings->add(new admin_setting_configcheckbox('mod_jitsi/allowbreakoutrooms', get_string('allowbreakoutrooms', 'jitsi'),
+        get_string('allowbreakoutroomsex', 'jitsi'), 1));
+
     $settings->add(new admin_setting_heading('jitsistreaming',
             get_string('streamingconfig', 'jitsi'), get_string('streamingconfigex', 'jitsi')));
     $settings->add(new admin_setting_configcheckbox('jitsi_livebutton', get_string('streamingbutton', 'jitsi'),
@@ -115,6 +124,9 @@ if ($ADMIN->fulltree) {
         4 * WEEKSECS,
         WEEKSECS
     ));
+
+    $settings->add(new admin_setting_configselect('mod_jitsi/latency', get_string('latency', 'jitsi'),
+    get_string('latencyex', 'jitsi'), '0', ['0' => 'Normal', '1' => 'Low', '2' => 'Ultra Low']));
 
     $link = new moodle_url('/mod/jitsi/adminaccounts.php');
     $settings->add(new admin_setting_heading('jitsi_loginoutyoutube', '', '<a href='.$link.' >'.

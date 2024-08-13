@@ -32,6 +32,8 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once("$CFG->libdir/formslib.php");
 require_once('search_table.php');
+require_once($CFG->dirroot.'/user/selector/lib.php');
+
 
 /**
  * Guest access form.
@@ -46,7 +48,7 @@ class datesearch_form extends moodleform {
      * Defines forms elements
      */
     public function definition() {
-        global $CFG;
+        global $CFG, $DB;
         $mform = $this->_form; // Don't forget the underscore!.
         $defaulttimestart = [
             'year' => date('Y'),
@@ -58,6 +60,35 @@ class datesearch_form extends moodleform {
         $mform->addElement('date_time_selector', 'timestart', get_string('from'),
             ['defaulttime' => $defaulttimestart]);
         $mform->addElement('date_time_selector', 'timeend', get_string('to'));
+
+        $usersid = $DB->get_records_sql('SELECT DISTINCT userid FROM {jitsi_source_record}');
+        $users = [];
+        foreach ($usersid as $userid) {
+            $user = $DB->get_record('user', ['id' => $userid->userid]);
+            $users[$user->id] = $user->firstname.' '.$user->lastname;
+        }
+        $options = [
+            'multiple' => true,
+            'noselectionstring' => 'Todos los usuarios',
+            'casesensitive' => false,
+        ];
+        $mform->addElement('autocomplete', 'userselected', 'Usuario', $users, $options);
+
+        $mform->setType('userselected', PARAM_INT);
+
+        $recorders = $DB->get_records('jitsi_record_account', null, '', 'id, name');
+        $recordersidnombre = [];
+        foreach ($recorders as $recorder) {
+            $recordersidnombre[$recorder->id] = $recorder->name;
+        }
+
+        $mform->addElement('select', 'recorder', get_string('recorders', 'jitsi'), $recordersidnombre);
+
+        $mform->getElement('recorder')->setMultiple(true);
+        $mform->addRule('recorder', null, 'required', null, 'client');
+
+        $indices = array_column($recorders, 'id');
+        $mform->getElement('recorder')->setSelected($indices);
 
         $buttonarray = [];
         $buttonarray[] = $mform->createElement('submit', 'submitbutton', get_string('search'));
@@ -84,6 +115,15 @@ require_login();
 
 $timestart = optional_param_array('timestart', 0, PARAM_INT);
 $timeend = optional_param_array('timeend', 0, PARAM_INT);
+$recorder = optional_param_array('recorder', [], PARAM_INT);
+if (isset($_POST['userselected']) && is_array($_POST['userselected'])) {
+    $userselected = optional_param_array('userselected', [], PARAM_INT);
+} else {
+    $userselected = [];
+}
+
+$recorders = $DB->get_records('jitsi_record_account');
+
 if ($timestart == 0) {
     $timestart = ['year' => 2021, 'month' => 1, 'day' => 1, 'hour' => 0, 'minute' => 0];
     $timeend = ['year' => 2021, 'month' => 12, 'day' => 31, 'hour' => 23, 'minute' => 59];
@@ -95,7 +135,6 @@ $timeendtimestamp = make_timestamp($timeend['year'], $timeend['month'],
 
 $PAGE->set_title(format_string(get_string('search')));
 $PAGE->set_heading(format_string(get_string('search')));
-
 echo $OUTPUT->header();
 
 if (is_siteadmin()) {
@@ -114,9 +153,19 @@ if (is_siteadmin()) {
     $where = '{jitsi_record}.source = {jitsi_source_record}.id and
                 {jitsi_source_record}.timecreated > '.$timestarttimestamp.' and
                 {jitsi_source_record}.timecreated < '.$timeendtimestamp;
+
+    if (!empty($recorder)) {
+        $recorderlist = implode(',', $recorder);
+        $where .= ' AND {jitsi_source_record}.account IN ('.$recorderlist.')';
+    }
+    if (!empty($userselected)) {
+        $userlist = implode(',', $userselected);
+        $where .= ' AND {jitsi_source_record}.userid IN ('.$userlist.')';
+    }
     $table->set_sql($fields, $from, $where, ['1']);
     $table->define_baseurl('/mod/jitsi/search.php?'.
-        http_build_query(['timestart' => $timestart, 'timeend' => $timeend]));
+        http_build_query(['timestart' => $timestart, 'timeend' => $timeend,
+            'recorder' => $recorder, 'userselected' => $userselected]));
     $table->out(10, true);
 } else {
     redirect($CFG->wwwroot, 'Acceso a busquedas no permitido. Solo administradores');

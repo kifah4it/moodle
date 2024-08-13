@@ -94,7 +94,12 @@ if ($jitsi->sourcerecord != null) {
         $DB->update_record('jitsi', $jitsi);
     }
 }
-
-createsession($teacher, $cmid, $avatar, $nombre, $session, null, $jitsi);
+if ($CFG->jitsi_id == 'username' && $nombre != $USER->username ||
+    $CFG->jitsi_id == 'nameandsurname' && $nombre != $USER->firstname.' '.$USER->lastname ||
+    $CFG->jitsi_id == 'alias' && $nombre != "") {
+    echo $OUTPUT->notification(get_string('urlerror', 'jitsi'), 'error');
+} else {
+    createsession($teacher, $cmid, $avatar, $nombre, $session, null, $jitsi);
+}
 
 echo $OUTPUT->footer();
